@@ -23,7 +23,7 @@ func NewUrlHandler(app *fiber.App, urlService IURLService) *URLHandler {
 }
 
 func (h *URLHandler) CreateShortenURL(c *fiber.Ctx) error {
-
+	
 	return nil
 }
 

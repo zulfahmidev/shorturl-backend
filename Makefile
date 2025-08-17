@@ -1,6 +1,6 @@
 db ?= postgres
 
-POSTGRES_DSN = "postgres://user:password@localhost:5432/dbname?sslmode=disable"
+POSTGRES_DSN = "postgres://trovary:password@localhost:5432/db_shorturl?sslmode=disable"
 
 SQLITE_FILE = "./data.db"
 SQLITE_DSN = "sqlite3://$(SQLITE_FILE)"
