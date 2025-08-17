@@ -42,14 +42,14 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 
 	var req GenerateShortURLRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(http.StatusBadRequest).JSON(rest.BaseResponse{
-			Message: "Bad Request",
+		return c.Status(http.StatusInternalServerError).JSON(rest.BaseResponse{
+			Message: "something went wrong",
 			Body:    nil,
 		})
 	}
 
 	if req.URL == nil {
-		err := errors.New("field url is required")
+		err := errors.New("missing url")
 		return c.Status(http.StatusBadRequest).JSON(rest.BaseResponse{
 			Message: err.Error(),
 			Body:    nil,
@@ -57,7 +57,7 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 	}
 
 	if !validator.IsValidURL(*req.URL) {
-		err := errors.New("field url is not valid format")
+		err := errors.New("invalid url format")
 		return c.Status(http.StatusUnprocessableEntity).JSON(rest.BaseResponse{
 			Message: err.Error(),
 			Body:    nil,
