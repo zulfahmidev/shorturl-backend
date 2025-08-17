@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/zulfahmidev/shorturl/internal/dto"
@@ -43,7 +42,7 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 
 	var req GenerateShortURLRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(rest.BaseResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(rest.BaseResponse{
 			Message: "something went wrong",
 			Body:    nil,
 		})
@@ -51,7 +50,7 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 
 	if req.URL == nil {
 		err := errors.New("missing url")
-		return c.Status(http.StatusBadRequest).JSON(rest.BaseResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(rest.BaseResponse{
 			Message: err.Error(),
 			Body:    nil,
 		})
@@ -59,7 +58,7 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 
 	if !validator.IsValidURL(*req.URL) {
 		err := errors.New("invalid url format")
-		return c.Status(http.StatusUnprocessableEntity).JSON(rest.BaseResponse{
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(rest.BaseResponse{
 			Message: err.Error(),
 			Body:    nil,
 		})
@@ -73,13 +72,13 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 	data, err := h.urlService.GenerateShortURL(*req.URL, idempotent)
 	if err != nil {
 		logger.Default().Error(err.Error(), zap.Error(err))
-		return c.Status(http.StatusInternalServerError).JSON(rest.BaseResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(rest.BaseResponse{
 			Message: "something went wrong",
 			Body:    nil,
 		})
 	}
 
-	return c.Status(http.StatusCreated).JSON(rest.BaseResponse{
+	return c.Status(fiber.StatusCreated).JSON(rest.BaseResponse{
 		Message: "short url generated successfully",
 		Body:    data,
 	})
@@ -111,20 +110,20 @@ func (h *URLHandler) GetStatsURL(c *fiber.Ctx) error {
 	data, err := h.urlService.GetStatsURL(shortToken)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(http.StatusNotFound).JSON(rest.BaseResponse{
+			return c.Status(fiber.StatusNotFound).JSON(rest.BaseResponse{
 				Message: "stats request for invalid token",
 				Body:    nil,
 			})
 		}
 
 		logger.Default().Error(err.Error(), zap.Error(err))
-		return c.Status(http.StatusInternalServerError).JSON(rest.BaseResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(rest.BaseResponse{
 			Message: "something went wrong",
 			Body:    nil,
 		})
 	}
 
-	return c.Status(http.StatusOK).JSON(rest.BaseResponse{
+	return c.Status(fiber.StatusOK).JSON(rest.BaseResponse{
 		Message: "statistics loaded successfully",
 		Body:    data,
 	})

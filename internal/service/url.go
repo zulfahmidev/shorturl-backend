@@ -46,7 +46,7 @@ func (s *URLService) GenerateShortURL(url string, idempotent bool) (*dto.URLData
 		return nil, err
 	}
 
-	return data, err
+	return data, nil
 }
 
 func (s *URLService) GetRedirectURL(token string) (*dto.URLData, error) {
@@ -69,5 +69,5 @@ func (s *URLService) GetStatsURL(token string) (*dto.URLData, error) {
 		return nil, err
 	}
 
-	return data, err
+	return data, nil
 }
