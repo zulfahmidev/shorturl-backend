@@ -1,15 +1,48 @@
 package service
 
-type IURLRepository interface {
+import (
+	"github.com/zulfahmidev/shorturl/internal/dto"
+	"gorm.io/gorm"
+)
 
+type IURLRepository interface {
+	Create(url string) (*dto.URLData, error)
+	FindByURL(url string) (*dto.URLData, error)
 }
 
 type URLService struct {
-	urlRepository *IURLRepository
+	urlRepository IURLRepository
 }
 
 func NewURLService(urlRepository IURLRepository) *URLService {
 	return &URLService{
-		urlRepository: &urlRepository,
+		urlRepository: urlRepository,
 	}
+}
+
+func (s *URLService) GenerateShortURL(url string, idempotent bool) (*dto.URLData, error) {
+	var (
+		data *dto.URLData
+		err  error
+	)
+
+	if idempotent {
+		data, err = s.urlRepository.FindByURL(url)
+		if err != nil {
+			if err != gorm.ErrRecordNotFound {
+				return nil, err
+			}
+		}
+
+		if data != nil {
+			return data, nil
+		}
+	}
+
+	data, err = s.urlRepository.Create(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, err
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/zulfahmidev/shorturl/cmd/config"
+	"github.com/zulfahmidev/shorturl/pkg/constant"
 )
 
 func RunServer() {
@@ -13,5 +13,5 @@ func RunServer() {
 	SetupResource(app)
 	InitDependencies(app)
 
-	app.Listen(fmt.Sprintf(":%d", config.APP_PORT))
+	app.Listen(fmt.Sprintf(":%d", constant.APP_PORT))
 }
