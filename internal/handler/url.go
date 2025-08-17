@@ -10,10 +10,12 @@ import (
 	"github.com/zulfahmidev/shorturl/pkg/rest"
 	"github.com/zulfahmidev/shorturl/pkg/validator"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type IURLService interface {
 	GenerateShortURL(url string, idempotent bool) (*dto.URLData, error)
+	GetStatsURL(token string) (*dto.URLData, error)
 }
 
 type URLHandler struct {
@@ -88,6 +90,25 @@ func (h *URLHandler) GetRedirectURL(c *fiber.Ctx) error {
 }
 
 func (h *URLHandler) GetStatsURL(c *fiber.Ctx) error {
+	shortToken := c.Params("shortToken")
+	data, err := h.urlService.GetStatsURL(shortToken)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(http.StatusNotFound).JSON(rest.BaseResponse{
+				Message: "stats request for invalid token",
+				Body:    nil,
+			})
+		}
 
-	return nil
+		logger.Default().Error(err.Error(), zap.Error(err))
+		return c.Status(http.StatusInternalServerError).JSON(rest.BaseResponse{
+			Message: "something went wrong",
+			Body:    nil,
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(rest.BaseResponse{
+		Message: "statistics loaded successfully",
+		Body:    data,
+	})
 }

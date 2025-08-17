@@ -57,3 +57,17 @@ func (r *URLRepository) FindByURL(url string) (*dto.URLData, error) {
 
 	return &data, nil
 }
+
+func (r *URLRepository) FindByToken(token string) (*dto.URLData, error) {
+	db := database.GetDB()
+
+	var urlModel model.URL
+	if err := db.Where("token = ?", token).Last(&urlModel).Error; err != nil {
+		return nil, err
+	}
+
+	var data dto.URLData
+	copier.Copy(&data, urlModel)
+
+	return &data, nil
+}

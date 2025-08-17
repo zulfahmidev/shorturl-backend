@@ -8,6 +8,7 @@ import (
 type IURLRepository interface {
 	Create(url string) (*dto.URLData, error)
 	FindByURL(url string) (*dto.URLData, error)
+	FindByToken(token string) (*dto.URLData, error)
 }
 
 type URLService struct {
@@ -40,6 +41,15 @@ func (s *URLService) GenerateShortURL(url string, idempotent bool) (*dto.URLData
 	}
 
 	data, err = s.urlRepository.Create(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, err
+}
+
+func (s *URLService) GetStatsURL(token string) (*dto.URLData, error) {
+	data, err := s.urlRepository.FindByToken(token)
 	if err != nil {
 		return nil, err
 	}
