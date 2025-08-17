@@ -6,6 +6,7 @@ import (
 	"github.com/zulfahmidev/shorturl/internal/model"
 	"github.com/zulfahmidev/shorturl/pkg/database"
 	"github.com/zulfahmidev/shorturl/pkg/token"
+	"gorm.io/gorm"
 )
 
 type URLRepository struct{}
@@ -71,3 +72,13 @@ func (r *URLRepository) FindByToken(token string) (*dto.URLData, error) {
 
 	return &data, nil
 }
+
+func (r *URLRepository) IncrementVisitCount(token string) error {
+	db := database.GetDB()
+
+	return db.Model(model.URL{}).
+	Where("token = ?", token).
+	UpdateColumn("visitor_count", gorm.Expr("visitor_count + 1")).
+	Error
+}
+

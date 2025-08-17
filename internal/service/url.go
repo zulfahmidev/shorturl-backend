@@ -9,6 +9,7 @@ type IURLRepository interface {
 	Create(url string) (*dto.URLData, error)
 	FindByURL(url string) (*dto.URLData, error)
 	FindByToken(token string) (*dto.URLData, error)
+	IncrementVisitCount(token string) error
 }
 
 type URLService struct {
@@ -46,6 +47,20 @@ func (s *URLService) GenerateShortURL(url string, idempotent bool) (*dto.URLData
 	}
 
 	return data, err
+}
+
+func (s *URLService) GetRedirectURL(token string) (*dto.URLData, error) {
+	data, err := s.urlRepository.FindByToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.urlRepository.IncrementVisitCount(token)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func (s *URLService) GetStatsURL(token string) (*dto.URLData, error) {

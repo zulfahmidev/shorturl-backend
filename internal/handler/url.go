@@ -16,6 +16,7 @@ import (
 type IURLService interface {
 	GenerateShortURL(url string, idempotent bool) (*dto.URLData, error)
 	GetStatsURL(token string) (*dto.URLData, error)
+	GetRedirectURL(token string) (*dto.URLData, error)
 }
 
 type URLHandler struct {
@@ -85,8 +86,24 @@ func (h *URLHandler) GenerateShortURL(c *fiber.Ctx) error {
 }
 
 func (h *URLHandler) GetRedirectURL(c *fiber.Ctx) error {
+	shortToken := c.Params("shortToken")
+	data, err := h.urlService.GetRedirectURL(shortToken)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(rest.BaseResponse{
+				Message: "unknown token",
+				Body:    nil,
+			})
+		}
 
-	return nil
+		logger.Default().Error(err.Error(), zap.Error(err))
+		return c.Status(fiber.StatusInternalServerError).JSON(rest.BaseResponse{
+			Message: "something went wrong",
+			Body:    nil,
+		})
+	}
+
+	return c.Redirect(data.URL, fiber.StatusFound)
 }
 
 func (h *URLHandler) GetStatsURL(c *fiber.Ctx) error {
