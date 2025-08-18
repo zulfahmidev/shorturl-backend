@@ -15,7 +15,7 @@ func RunServer() {
 
 	port := os.Getenv("APP_PORT")
 	if port == "" {
-		port = "8000"
+		port = "8080"
 	}
 	app.Listen(fmt.Sprintf(":%s", port))
 }
