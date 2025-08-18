@@ -73,6 +73,20 @@ func (r *URLRepository) FindByToken(token string) (*dto.URLData, error) {
 	return &data, nil
 }
 
+func (r *URLRepository) FindAll() (*[]dto.URLData, error) {
+	db := database.GetDB()
+
+	var urlModel []model.URL
+	if err := db.Find(&urlModel).Order("created_at DESC").Error; err != nil {
+		return nil, err
+	}
+
+	var data []dto.URLData
+	copier.Copy(&data, urlModel)
+
+	return &data, nil
+}
+
 func (r *URLRepository) IncrementVisitCount(token string) error {
 	db := database.GetDB()
 

@@ -49,6 +49,21 @@ func (mr *MockIURLRepositoryMockRecorder) Create(url interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockIURLRepository)(nil).Create), url)
 }
 
+// FindAll mocks base method.
+func (m *MockIURLRepository) FindAll() (*[]dto.URLData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll")
+	ret0, _ := ret[0].(*[]dto.URLData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockIURLRepositoryMockRecorder) FindAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockIURLRepository)(nil).FindAll))
+}
+
 // FindByToken mocks base method.
 func (m *MockIURLRepository) FindByToken(token string) (*dto.URLData, error) {
 	m.ctrl.T.Helper()
@@ -74,7 +89,7 @@ func (m *MockIURLRepository) FindByURL(url string) (*dto.URLData, error) {
 }
 
 // FindByURL indicates an expected call of FindByURL.
-func (mr *MockIURLRepositoryMockRecorder) FindByURL(url string) *gomock.Call {
+func (mr *MockIURLRepositoryMockRecorder) FindByURL(url interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByURL", reflect.TypeOf((*MockIURLRepository)(nil).FindByURL), url)
 }
@@ -88,7 +103,7 @@ func (m *MockIURLRepository) IncrementVisitCount(token string) error {
 }
 
 // IncrementVisitCount indicates an expected call of IncrementVisitCount.
-func (mr *MockIURLRepositoryMockRecorder) IncrementVisitCount(token string) *gomock.Call {
+func (mr *MockIURLRepositoryMockRecorder) IncrementVisitCount(token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrementVisitCount", reflect.TypeOf((*MockIURLRepository)(nil).IncrementVisitCount), token)
 }

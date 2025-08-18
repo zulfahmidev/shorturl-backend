@@ -8,6 +8,7 @@ import (
 type IURLRepository interface {
 	Create(url string) (*dto.URLData, error)
 	FindByURL(url string) (*dto.URLData, error)
+	FindAll() (*[]dto.URLData, error)
 	FindByToken(token string) (*dto.URLData, error)
 	IncrementVisitCount(token string) error
 }
@@ -65,6 +66,15 @@ func (s *URLService) GetRedirectURL(token string) (*dto.URLData, error) {
 
 func (s *URLService) GetStatsURL(token string) (*dto.URLData, error) {
 	data, err := s.urlRepository.FindByToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (s *URLService) GetListURL() (*[]dto.URLData, error) {
+	data, err := s.urlRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}

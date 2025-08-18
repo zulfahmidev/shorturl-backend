@@ -16,6 +16,7 @@ type IURLService interface {
 	GenerateShortURL(url string, idempotent bool) (*dto.URLData, error)
 	GetStatsURL(token string) (*dto.URLData, error)
 	GetRedirectURL(token string) (*dto.URLData, error)
+	GetListURL() (*[]dto.URLData, error)
 }
 
 type URLHandler struct {
@@ -28,6 +29,7 @@ func NewUrlHandler(app *fiber.App, urlService IURLService) *URLHandler {
 	}
 
 	app.Post("/shorten", handler.GenerateShortURL)
+	app.Get("/", handler.GetListURL)
 	app.Get("/:shortToken", handler.GetRedirectURL)
 	app.Get("/stats/:shortToken", handler.GetStatsURL)
 
@@ -125,6 +127,23 @@ func (h *URLHandler) GetStatsURL(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(rest.BaseResponse{
 		Message: "statistics loaded successfully",
+		Body:    data,
+	})
+}
+
+
+func (h *URLHandler) GetListURL(c *fiber.Ctx) error {
+	data, err := h.urlService.GetListURL()
+	if err != nil {
+		logger.Default().Error(err.Error(), zap.Error(err))
+		return c.Status(fiber.StatusInternalServerError).JSON(rest.BaseResponse{
+			Message: "something went wrong",
+			Body:    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(rest.BaseResponse{
+		Message: "url loaded successfully",
 		Body:    data,
 	})
 }
