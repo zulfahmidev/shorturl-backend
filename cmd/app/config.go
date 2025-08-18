@@ -13,9 +13,7 @@ import (
 )
 
 func Config(app *fiber.App) {
-	if err := godotenv.Load(); err != nil {
-		panic("Error loading .env file!")
-	}
+	godotenv.Load()
 	validator.InitValidator()
 	logger.InitLogger()
 	cors.InitCors(app)
