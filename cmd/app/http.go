@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,5 +18,8 @@ func RunServer() {
 	if port == "" {
 		port = "8080"
 	}
-	app.Listen(fmt.Sprintf(":%s", port))
+	err := app.Listen(fmt.Sprintf(":%s", port))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
