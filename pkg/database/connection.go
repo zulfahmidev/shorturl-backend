@@ -3,10 +3,9 @@ package database
 import (
 	"fmt"
 	"log"
+	"os"
 
-	"github.com/zulfahmidev/shorturl/pkg/constant"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -21,34 +20,21 @@ func InitDB() {
 		err error
 	)
 
-	switch constant.DATABASE_DRIVER {
-	case "postgres":
-		dsn = fmt.Sprintf(
-			"postgres://%s:%s@%s:%d/%s?sslmode=disable",
-			constant.DATABASE_USER,
-			constant.DATABASE_PASSWORD,
-			constant.DATABASE_HOST,
-			constant.DATABASE_PORT,
-			constant.DATABASE_NAME,
-		)
-		conn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-		if err != nil {
-			log.Fatalf("failed to connect postgres: %v", err)
-		}
-
-		conn.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
-		conn.Exec(`CREATE EXTENSION IF NOT EXISTS postgis`)
-
-	case "sqlite3":
-		dsn = "./shorturl.db"
-		conn, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
-		if err != nil {
-			log.Fatalf("failed to connect sqlite: %v", err)
-		}
-
-	default:
-		log.Fatalf("unsupported driver: %s", constant.DATABASE_DRIVER)
+	dsn = fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		os.Getenv("DATABASE_USER"),
+		os.Getenv("DATABASE_PASSWORD"),
+		os.Getenv("DATABASE_HOST"),
+		os.Getenv("DATABASE_PORT"),
+		os.Getenv("DATABASE_NAME"),
+	)
+	conn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("failed to connect postgres: %v", err)
 	}
+
+	conn.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
+	conn.Exec(`CREATE EXTENSION IF NOT EXISTS postgis`)
 
 	db = conn
 }

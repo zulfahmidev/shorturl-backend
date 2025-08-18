@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"github.com/zulfahmidev/shorturl/pkg/cors"
 	"github.com/zulfahmidev/shorturl/pkg/database"
 	"github.com/zulfahmidev/shorturl/pkg/logger"
@@ -11,7 +12,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func SetupResource(app *fiber.App) {
+func Config(app *fiber.App) {
+	if err := godotenv.Load(); err != nil {
+		panic("Error loading .env file!")
+	}
 	validator.InitValidator()
 	logger.InitLogger()
 	cors.InitCors(app)

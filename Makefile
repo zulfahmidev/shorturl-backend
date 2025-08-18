@@ -1,18 +1,4 @@
-db ?= postgres
-
-POSTGRES_DSN = "postgres://trovary:password@localhost:5432/db_shorturl?sslmode=disable"
-
-SQLITE_FILE = "./data.db"
-SQLITE_DSN = "sqlite3://$(SQLITE_FILE)"
-
-ifeq ($(db),postgres)
-	DB_URL = $(POSTGRES_DSN)
-else ifeq ($(db),sqlite)
-	DB_URL = $(SQLITE_DSN)
-else
-	$(error DB harus postgres atau sqlite)
-endif
-
+DB_URL = "postgres://trovary:password@localhost:5432/db_shorturl?sslmode=disable"
 MIGRATIONS = db/migration
 MIGRATE = migrate -path $(MIGRATIONS) -database $(DB_URL)
 

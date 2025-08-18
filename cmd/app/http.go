@@ -2,16 +2,20 @@ package app
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/zulfahmidev/shorturl/pkg/constant"
 )
 
 func RunServer() {
 	app := fiber.New()
 
-	SetupResource(app)
+	Config(app)
 	InitDependencies(app)
 
-	app.Listen(fmt.Sprintf(":%d", constant.APP_PORT))
+	port := os.Getenv("APP_PORT")
+	if port == "" {
+		port = "8000"
+	}
+	app.Listen(fmt.Sprintf(":%s", port))
 }
