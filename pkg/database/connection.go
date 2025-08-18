@@ -28,7 +28,10 @@ func InitDB() {
 		os.Getenv("DATABASE_PORT"),
 		os.Getenv("DATABASE_NAME"),
 	)
-	conn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	conn, err = gorm.Open(postgres.New(postgres.Config{
+		DSN: dsn,
+		PreferSimpleProtocol: true,
+	}), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect postgres: %v", err)
 	}
