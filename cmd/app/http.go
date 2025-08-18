@@ -13,7 +13,7 @@ func RunServer() {
 	Config(app)
 	InitDependencies(app)
 
-	port := os.Getenv("APP_PORT")
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
