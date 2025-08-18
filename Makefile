@@ -1,6 +1,12 @@
-DB_URL = "postgres://trovary:password@localhost:5432/db_shorturl?sslmode=disable"
+include .env
+export $(shell sed 's/=.*//' .env)
+
+DB_URL = "postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?sslmode=disable"
 MIGRATIONS = db/migration
 MIGRATE = migrate -path $(MIGRATIONS) -database $(DB_URL)
+
+print-env:
+	@echo "User: $(DB_USER), Pass: $(DB_PASS)"
 
 migrate-up:
 	$(MIGRATE) up
